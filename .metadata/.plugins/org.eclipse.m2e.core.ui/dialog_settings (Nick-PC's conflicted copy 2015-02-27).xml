@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.m2e.core.pom.dependencies">
+	</section>
+	<section name="org.eclipse.m2e.core.pom.overview">
+		<list key="ciManagementUrl">
+		</list>
+		<list key="ciManagementSystem">
+		</list>
+		<list key="issueManagementSystem">
+		</list>
+		<list key="issueManagementUrl">
+		</list>
+	</section>
+	<section name="MavenProjectImportWizardPage">
+		<list key="rootDirectory">
+			<item value="D:\Dropbox\KTH\DSAC\id2203-ass3-shm"/>
+			<item value="D:\Dropbox\KTH\DSAC\id2203-ass2-broadcast2"/>
+			<item value="/Users/Nikos/Desktop/DSAC/id2203-ass2-broadcast"/>
+			<item value="/Users/Nikos/Desktop/DSAC/kompics-tutorial"/>
+			<item value="/Users/Nikos/Desktop/DSAC/id2203-ass1-epfd"/>
+			<item value="/Users/Nikos/Desktop/DSAC/id2203-ass0-start"/>
+			<item value="/Users/Nikos/Desktop/id2203-ass1-epfd"/>
+			<item value="/Users/Nikos/Desktop/id2203-ass0-start"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="2"/>
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+		</list>
+	</section>
+</section>

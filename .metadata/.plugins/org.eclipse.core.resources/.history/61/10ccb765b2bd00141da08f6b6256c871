@@ -1,0 +1,21 @@
+package se.kth.ict.id2203.components.multipaxos;
+
+import se.kth.ict.id2203.ports.pp2p.Pp2pDeliver;
+import se.sics.kompics.address.Address;
+
+public class Nack extends Pp2pDeliver{
+	private int ts;
+	private int t;
+	protected Nack(Address source, int ts, int t) {
+		super(source);
+		this.ts = ts;
+		this.t = t;
+	}
+
+	public getTs(){
+		return ts;
+	}
+	public int getT(){
+		return t;
+	}
+}

@@ -1,0 +1,44 @@
+package se.kth.ict.id2203.components.multipaxos;
+
+import java.util.List;
+
+import se.kth.ict.id2203.ports.fpl.FplDeliver;
+import se.sics.kompics.address.Address;
+
+public class PrepareAck extends FplDeliver{
+	
+	private static final long serialVersionUID = 4904584634495941815L;
+	private int ts;
+	private int t;
+	private int l;
+	private int pts;
+
+	
+	
+	protected PrepareAck(Address source, int pts, int ts, List<Object> usuf,
+			int l, int t) {
+		super(source);
+		this.ts = ts;
+		this.pts = pts;
+		this.l = l;
+		this.t = t;
+	}
+
+	
+
+	public int getTs(){
+		return ts;
+	}
+	public int getT(){
+		return t;
+	}
+	public int getPts(){
+		return pts;
+	}
+	public int getL(){
+		return l;
+	}
+	public List<Object> getUsuf(){
+		return usuf;
+	}
+}

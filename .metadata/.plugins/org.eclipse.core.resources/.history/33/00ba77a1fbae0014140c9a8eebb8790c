@@ -1,0 +1,63 @@
+package se.kth.ict.id2203.components.epfd;
+
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import se.kth.ict.id2203.components.flp2p.DelayDropLinkMessage;
+import se.kth.ict.id2203.components.flp2p.DelayedMessage;
+import se.kth.ict.id2203.ports.epfd.EventuallyPerfectFailureDetector;
+import se.kth.ict.id2203.ports.epfd.Restore;
+import se.kth.ict.id2203.ports.flp2p.Flp2pDeliver;
+import se.kth.ict.id2203.ports.flp2p.Flp2pSend;
+import se.kth.ict.id2203.ports.pp2p.PerfectPointToPointLink;
+import se.sics.kompics.ComponentDefinition;
+import se.sics.kompics.Handler;
+import se.sics.kompics.Negative;
+import se.sics.kompics.Positive;
+import se.sics.kompics.address.Address;
+import se.sics.kompics.launch.NoLinkException;
+import se.sics.kompics.timer.ScheduleTimeout;
+import se.sics.kompics.timer.Timer;
+
+public class Epfd extends ComponentDefinition {
+
+	private static final Logger logger = LoggerFactory.getLogger(Epfd.class);
+	private Positive<Timer> timer = requires(Timer.class);
+	private Positive<PerfectPointToPointLink> pp2p = requires(PerfectPointToPointLink.class);
+	private Negative<EventuallyPerfectFailureDetector> epfd = provides(EventuallyPerfectFailureDetector.class);
+	
+	public Epfd(EpfdInit init) {
+	//	subscribe(handlePp2pSend, timer);
+	//	subscribe(handleMessage, pp2p);
+		subscribe(eventuallyPerfectFailureDetector, epfd);
+	}
+	
+	private Handler<Restore> eventuallyPerfectFailureDetector = new Handler<Restore>() {
+		@Override
+		public void handle(EventuallyPerfectFailureDetector event) {
+			
+		}
+
+		@Override
+		public void handle(Restore arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+	};
+
+	private Handler<DelayedMessage> handleDelayedMessage = new Handler<DelayedMessage>() {
+		@Override
+		public void handle(DelayedMessage event) {
+			trigger(event.getMessage(), network);
+		}
+	};
+
+	private Handler<DelayDropLinkMessage> handleMessage = new Handler<DelayDropLinkMessage>() {
+		@Override
+		public void handle(DelayDropLinkMessage event) {
+			trigger(event.getDeliverEvent(), flp2p);
+		}
+	};
+}

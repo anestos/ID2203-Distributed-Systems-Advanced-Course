@@ -1,0 +1,117 @@
+package se.kth.ict.id2203.components.epfd;
+
+import java.util.Set;
+import java.util.UUID;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import se.kth.ict.id2203.components.pp2p.DelayLinkMessage;
+import se.kth.ict.id2203.components.pp2p.DelayedMessage;
+import se.kth.ict.id2203.ports.epfd.EventuallyPerfectFailureDetector;
+import se.kth.ict.id2203.ports.epfd.Restore;
+import se.kth.ict.id2203.ports.epfd.Suspect;
+import se.kth.ict.id2203.ports.pp2p.PerfectPointToPointLink;
+import se.sics.kompics.ComponentDefinition;
+import se.sics.kompics.Handler;
+import se.sics.kompics.Negative;
+import se.sics.kompics.Positive;
+import se.sics.kompics.Start;
+import se.sics.kompics.address.Address;
+import se.sics.kompics.launch.NoLinkException;
+import se.sics.kompics.launch.Topology;
+import se.sics.kompics.timer.SchedulePeriodicTimeout;
+import se.sics.kompics.timer.ScheduleTimeout;
+import se.sics.kompics.timer.Timer;
+
+public class Epfd extends ComponentDefinition {
+
+	private static final Logger logger = LoggerFactory.getLogger(Epfd.class);
+	private Positive<Timer> timer = requires(Timer.class);
+	private Positive<PerfectPointToPointLink> pp2p = requires(PerfectPointToPointLink.class);
+	private Negative<EventuallyPerfectFailureDetector> epfd = provides(EventuallyPerfectFailureDetector.class);
+	
+	private long delay;
+	private long delta;
+	private Address self;
+	private Address[] topology;
+	private Set<Address> alive;
+	private Set<Address> suspected;
+	private UUID timeoutId;
+	private int seqnum;
+	
+	public Epfd(EpfdInit init) {
+		subscribe(handleTimeout, timer);
+		subscribe(heartBeatRequest, pp2p);
+		subscribe(heartBeatReply, pp2p);
+		subscribe(handleStart, control);
+
+		delay = init.getInitialDelay();
+		delta = init.getDeltaDelay();
+		alive = init.getAllAddresses();
+		
+		topology = (Address[]) (init.getAllAddresses()).toArray();
+		seqnum++;
+		self = init.getSelfAddress();
+		logger.info("The value of variable delay is {}", delay);
+	}
+	private Handler<Start> handleStart = new Handler<Start>() {
+		@Override
+		public void handle(Start event) {
+			SchedulePeriodicTimeout st = new SchedulePeriodicTimeout(delay, delta);
+			st.setTimeoutEvent(new CheckTimeout(st));
+			timeoutId = st.getTimeoutEvent().getTimeoutId();
+			trigger(st, timer);	
+		}
+	};
+	
+	private Handler<CheckTimeout> handleTimeout = new Handler<CheckTimeout>() {
+		@Override
+		public void handle(CheckTimeout arg0) {
+			seqnum++;
+			 if (alive.retainAll(suspected) ){
+				delay = delay+delta;
+			}
+			Object[] array = topology.toArray();
+
+			for(int i=0; i<array.length; i++) {
+				Address o = (Address) array[i];
+			
+			   if (!alive.contains(o) && !suspected.contains(o)) {
+					suspected.add(o);
+					trigger(new Suspect(o),epfd);
+					logger.info("process suspected {}", o);
+				} 
+				else if (alive.contains(o) && suspected.contains(o)) {
+					
+					suspected.remove(o);
+					trigger(new Restore(o),epfd);
+					logger.info("process restored {}", o);
+
+				}
+				trigger(new HeartbeatRequestMessage(o),pp2p);		   
+				logger.info("request heartbeat from {}", o);
+
+			}
+			alive.clear();
+			
+			//logger.info("Timeout reached {}", seqnum);
+		}
+	};
+	
+	private Handler<HeartbeatRequestMessage> heartBeatRequest = new Handler<HeartbeatRequestMessage>() {
+		@Override
+		public void handle(HeartbeatRequestMessage arg0) {
+			trigger(new HeartbeatReplyMessage(arg0.getSource()),pp2p);
+		}
+	};
+	
+	private Handler<HeartbeatReplyMessage> heartBeatReply = new Handler<HeartbeatReplyMessage>() {
+		@Override
+		public void handle(HeartbeatReplyMessage arg0) {
+			alive.add(arg0.getSource());
+		}
+	};
+
+
+}

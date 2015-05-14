@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;id2203-ass1-epfd/src/main/java/se/kth/ict/id2203/components/epfd/test.html&apos; to &apos;test.txt&apos;" description="Rename resource &apos;test.html&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/java/se/kth/ict/id2203/components/epfd/test.html" name="test.txt" stamp="1423409471998" updateReferences="true"/>
+</session>

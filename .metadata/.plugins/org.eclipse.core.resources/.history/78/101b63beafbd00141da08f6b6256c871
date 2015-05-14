@@ -1,0 +1,29 @@
+package se.kth.ict.id2203.components.multipaxos;
+
+import se.kth.ict.id2203.ports.pp2p.Pp2pDeliver;
+import se.sics.kompics.address.Address;
+
+public class Prepare extends Pp2pDeliver{
+
+	private static final long serialVersionUID = -2581064400982342179L;
+	private int pts;
+	private int al;
+	private int t;
+	protected Prepare(Address source, int pts, int al, int t) {
+		super(source);
+		this.pts = pts;
+		this.al = al;
+		this.t = t;
+		// TODO Auto-generated constructor stub
+	}
+	public int getPts(){
+		return pts;
+	}
+	public int getAl(){
+		return al;
+	}
+	public int getT(){
+		return t;
+	}
+
+}
