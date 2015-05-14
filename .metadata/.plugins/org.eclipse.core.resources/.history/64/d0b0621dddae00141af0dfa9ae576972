@@ -1,5 +1,0 @@
-package se.kth.ict.id2203.components.epfd;
-
-public class HeartbeatRequestMessage {
-
-}

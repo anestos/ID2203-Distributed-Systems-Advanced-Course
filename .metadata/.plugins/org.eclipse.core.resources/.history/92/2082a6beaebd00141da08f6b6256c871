@@ -1,5 +1,0 @@
-package se.kth.ict.id2203.components.multipaxos;
-
-public class Accept {
-
-}
